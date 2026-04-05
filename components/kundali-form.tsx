@@ -8,15 +8,8 @@ import {
   RiLoaderLine,
   RiFileCopyLine,
   RiCheckLine,
-  RiSettings3Line,
   RiSparklingLine,
   RiErrorWarningLine,
-  RiMoonLine,
-  RiSunLine,
-  RiUser3Line,
-  RiMapPin2Line,
-  RiTimeLine,
-  RiCalendarLine,
 } from "@remixicon/react"
 import { toast } from "sonner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -26,14 +19,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
@@ -201,7 +186,7 @@ export function KundaliForm() {
             <Alert variant="destructive" className="shadow-lg">
               <RiErrorWarningLine />
               <AlertTitle className="font-semibold">Server returned {res.status}</AlertTitle>
-              <AlertDescription className="opacity-70 text-xs">{text || res.statusText}</AlertDescription>
+              <AlertDescription className="text-xs">{text || res.statusText}</AlertDescription>
             </Alert>
           ),
           { id: "api-error" }
@@ -223,7 +208,7 @@ export function KundaliForm() {
           <Alert variant="destructive" className="shadow-lg">
             <RiErrorWarningLine />
             <AlertTitle className="font-semibold">Request failed</AlertTitle>
-            <AlertDescription className="opacity-70 text-xs">
+            <AlertDescription className="text-xs">
               {err instanceof Error ? err.message : String(err)}
             </AlertDescription>
           </Alert>
@@ -284,30 +269,30 @@ export function KundaliForm() {
                   {/* Gender */}
                   <Field>
                     <FieldLabel>Gender</FieldLabel>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { val: "MALE", label: "Male" },
-                        { val: "FEMALE", label: "Female" },
-                        { val: "OTHER", label: "Other" },
-                      ].map((opt) => {
-                        const checked = watch("gender") === opt.val
-                        return (
-                          <button
-                            key={opt.val}
-                            type="button"
-                            onClick={() => setValue("gender", opt.val as any, { shouldValidate: true })}
-                            className={cn(
-                              "flex items-center justify-center rounded-md border-2 h-[42px] transition-all font-semibold text-[13px]",
-                              checked
-                                ? "border-primary bg-primary/5 text-primary shadow-sm"
-                                : "border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
-                            )}
-                          >
-                            {opt.label}
-                          </button>
-                        )
-                      })}
-                    </div>
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field }) => (
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="grid grid-cols-3 gap-3"
+                        >
+                          {[
+                            { val: "MALE", label: "Male" },
+                            { val: "FEMALE", label: "Female" },
+                            { val: "OTHER", label: "Other" },
+                          ].map((opt) => (
+                            <FieldLabel key={opt.val} htmlFor={opt.val}>
+                              <Field orientation="horizontal">
+                                <RadioGroupItem value={opt.val} id={opt.val} />
+                                {opt.label}
+                              </Field>
+                            </FieldLabel>
+                          ))}
+                        </RadioGroup>
+                      )}
+                    />
                     <FieldError>{errors.gender?.message}</FieldError>
                   </Field>
                 </div>
@@ -440,7 +425,7 @@ export function KundaliForm() {
                 <Field>
                   <div className="flex items-center justify-between">
                     <FieldLabel>Divisional Charts</FieldLabel>
-                    <Badge variant="secondary" className="px-2 py-0.5 text-[11px] font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors cursor-default">
+                    <Badge variant="default" className="px-2 py-0.5 text-[11px] font-medium cursor-default">
                       {selectedCharts.length} selected
                     </Badge>
                   </div>
@@ -655,7 +640,7 @@ export function KundaliForm() {
               >
                 {copied ? (
                   <>
-                    <RiCheckLine className="size-3.5 text-emerald-500" />
+                    <RiCheckLine className="size-3.5 text-primary" />
                     <span className="text-xs font-semibold">Copied</span>
                   </>
                 ) : (
