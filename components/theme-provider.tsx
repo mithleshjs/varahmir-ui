@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
+import { RiMoonLine, RiSunLine } from "@remixicon/react"
+import { Button } from "@/components/ui/button"
 
 function ThemeProvider({
   children,
@@ -68,4 +70,21 @@ function ThemeHotkey() {
   return null
 }
 
-export { ThemeProvider }
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme()
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      aria-label="Toggle theme"
+      className="fixed right-4 bottom-4 z-50 rounded-full shadow-md"
+    >
+      <RiSunLine className="size-4 dark:hidden" />
+      <RiMoonLine className="size-4 hidden dark:block" />
+    </Button>
+  )
+}
+
+export { ThemeProvider, ThemeToggle }

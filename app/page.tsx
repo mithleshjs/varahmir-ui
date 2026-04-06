@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { KundaliForm } from "@/components/kundali-form"
 import { Badge } from "@/components/ui/badge"
+import { ThemeToggle } from "@/components/theme-provider"
 
 export default function Page() {
   return (
@@ -36,6 +37,7 @@ export default function Page() {
         </header>
         <KundaliForm />
       </div>
+      <ThemeToggle />
       <footer className="relative z-10 mt-8 pb-6 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} · Designed by{" "}
         <a
