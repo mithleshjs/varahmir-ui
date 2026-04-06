@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/theme-provider"
 
 export default function Page() {
   return (
-    <main className="relative min-h-svh overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-20">
+    <main className="relative flex min-h-svh flex-col overflow-hidden bg-background px-4 pt-16 sm:px-6 sm:pt-20">
       <div
         className="pointer-events-none absolute inset-0 aspect-2/3 mask-t-from-50% mask-radial-[75%_100%] mask-radial-from-45% mask-radial-to-75% mask-radial-at-top opacity-100 md:aspect-square lg:aspect-9/4 dark:opacity-25"
         aria-hidden
@@ -38,7 +38,7 @@ export default function Page() {
         <KundaliForm />
       </div>
       <ThemeToggle />
-      <footer className="relative z-10 mt-8 pb-6 text-center text-xs text-muted-foreground">
+      <footer className="relative z-10 mt-auto pb-6 pt-8 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} · Designed by{" "}
         <a
           href="https://github.com/mithleshjs"
