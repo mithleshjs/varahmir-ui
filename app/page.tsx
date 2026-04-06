@@ -20,15 +20,26 @@ export default function Page() {
           <Badge variant="outline" className="font-mono uppercase tracking-widest">
             Vedic Astrology
           </Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground font-serif italic">
             Kundali Generator
           </h1>
-          <p className="text-base text-muted-foreground max-w-md mx-auto">
+          <p className="text-base text-muted-foreground max-w-md mx-auto font-serif italic">
             Generate a detailed Vedic birth chart with divisional charts, dashas, and ashtakvarga from birth details.
           </p>
         </header>
         <KundaliForm />
       </div>
+      <footer className="relative z-10 mt-8 pb-6 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} · Designed by{" "}
+        <a
+          href="https://github.com/mithleshjs"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-4 hover:text-foreground transition-colors"
+        >
+          Mithlesh
+        </a>
+      </footer>
     </main>
   )
 }

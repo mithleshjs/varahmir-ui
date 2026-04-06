@@ -25,6 +25,7 @@ export interface PlaceResult {
 interface PlaceSearchProps {
   onSelect: (result: PlaceResult) => void
   className?: string
+  invalid?: boolean
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -44,7 +45,7 @@ async function fetchTimezone(lat: number, lon: number): Promise<string | null> {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function PlaceSearch({ onSelect, className }: PlaceSearchProps) {
+export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<NominatimResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -124,6 +125,7 @@ export function PlaceSearch({ onSelect, className }: PlaceSearchProps) {
           onChange={handleInputChange}
           onFocus={() => results.length > 0 && setOpen(true)}
           className={cn("pr-8 pl-8", className)}
+          aria-invalid={invalid}
           autoComplete="off"
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2">
