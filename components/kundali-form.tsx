@@ -10,6 +10,10 @@ import {
   RiCheckLine,
   RiSparklingLine,
   RiErrorWarningLine,
+  RiUserLine,
+  RiLayoutGridLine,
+  RiFileTextLine,
+  RiCodeLine,
 } from "@remixicon/react"
 import { toast } from "sonner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -17,11 +21,12 @@ import { PlaceSearch } from "@/components/place-search"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { Frame, FramePanel } from "@/components/reui/frame"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldLabel, FieldError } from "@/components/ui/field"
 import {
   Dialog,
@@ -68,8 +73,8 @@ const formSchema = z.object({
     minute: z.number({ error: "Minute is required and must be a number" }).int().min(0, "0–59").max(59, "0–59"),
     second: z.number({ error: "Second must be a number" }).int().min(0, "0–59").max(59, "0–59").optional(),
   }),
-  lat: z.number({ error: "Latitude must be a number" }).min(-90, "−90 to 90").max(90, "−90 to 90"),
-  lng: z.number({ error: "Longitude must be a number" }).min(-180, "−180 to 180").max(180, "−180 to 180"),
+  lat: z.number({ error: "Birth location is required" }).min(-90, "−90 to 90").max(90, "−90 to 90"),
+  lng: z.number({ error: "Birth location is required" }).min(-180, "−180 to 180").max(180, "−180 to 180"),
   timezone: z.string({ error: "Timezone must be a string" }).min(1, "Timezone is required"),
   divisionalCharts: z
     .array(z.number())
@@ -139,8 +144,8 @@ export function KundaliForm() {
       gender: "MALE",
       dob: { year: 1990, month: 1, day: 1 },
       time: { hour: 0, minute: 0, second: 0 },
-      lat: 0,
-      lng: 0,
+      lat: undefined,
+      lng: undefined,
       timezone: "Asia/Kolkata",
       divisionalCharts: [9 as const],
       moonChart: false,
@@ -229,25 +234,28 @@ export function KundaliForm() {
     <div className="max-w-2xl mx-auto flex flex-col gap-8 py-6">
 
       {/* ── Form ─────────────────────────────────────── */}
-      <Card>
-        <CardHeader className="pb-6 border-b border-border/40 mb-2">
-          <CardTitle className="flex items-center gap-2.5 text-2xl font-bold tracking-tight">
-            <div className="flex size-10 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
-              <RiSparklingLine className="size-5" />
-            </div>
-            Kundali Generator
-          </CardTitle>
-          <CardDescription className="text-[15px] pl-[3.25rem]">
-            Generate a precise Vedic natal chart using modern ephemeris integration.
-          </CardDescription>
-        </CardHeader>
+      <Frame>
+        <FramePanel className="p-0!">
+        <div className="flex items-center px-4 py-4 border-b bg-muted/40 relative overflow-hidden shrink-0">
+          <div className="flex gap-2 z-10">
+            <div className="size-3.5 rounded-full bg-[#ff5f56] ring-1 ring-border/50" />
+            <div className="size-3.5 rounded-full bg-[#ffbd2e] ring-1 ring-border/50" />
+            <div className="size-3.5 rounded-full bg-[#27c93f] ring-1 ring-border/50" />
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="flex items-center gap-2 text-sm font-mono font-medium tracking-wide text-muted-foreground">
+              <RiSparklingLine className="size-3.5" />
+              kundali_generator
+            </span>
+          </div>
+        </div>
 
-        <CardContent>
+        <div className="p-6">
           <form id="kundali-generation-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="basic">Birth Details</TabsTrigger>
-                <TabsTrigger value="advanced">Chart Settings</TabsTrigger>
+                <TabsTrigger value="basic"><RiUserLine className="size-3.5" />Birth Details</TabsTrigger>
+                <TabsTrigger value="advanced"><RiLayoutGridLine className="size-3.5" />Chart Settings</TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-8 mt-0 focus-visible:outline-none focus-visible:ring-0">
@@ -434,28 +442,24 @@ export function KundaliForm() {
                     control={control}
                     render={({ field }) => (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                        {DIVISIONAL_CHARTS.map((chart) => {
-                          const checked = field.value.includes(chart.id)
-                          return (
-                            <button
-                              key={chart.id}
-                              type="button"
-                              onClick={() => toggleDivisionalChart(chart.id, field.value)}
-                              className={cn(
-                                "flex flex-col items-start rounded-md border-2 p-2 transition-all text-left",
-                                checked
-                                  ? "border-primary bg-primary/5 text-primary shadow-sm"
-                                  : "border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
-                              )}
-                            >
-                              <div className="flex items-center gap-1.5 w-full">
-                                <span className="text-[13px] font-bold">D{chart.id}</span>
-                                <span className={cn("text-[11px] font-semibold truncate", checked ? "opacity-90" : "text-muted-foreground")}>{chart.label}</span>
+                        {DIVISIONAL_CHARTS.map((chart) => (
+                          <FieldLabel key={chart.id} htmlFor={`chart-${chart.id}`}>
+                            <Field>
+                              <div className="flex min-w-0 flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <Checkbox
+                                    id={`chart-${chart.id}`}
+                                    checked={field.value.includes(chart.id)}
+                                    onCheckedChange={() => toggleDivisionalChart(chart.id, field.value)}
+                                  />
+                                  <span className="text-sm font-bold shrink-0">D{chart.id}</span>
+                                  <span className="text-xs text-muted-foreground truncate">{chart.label}</span>
+                                </div>
+                                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{chart.domain}</span>
                               </div>
-                              <span className={cn("text-[10px] uppercase font-medium tracking-wider mt-0.5 truncate w-full", checked ? "opacity-70" : "text-muted-foreground")}>{chart.domain}</span>
-                            </button>
-                          )
-                        })}
+                            </Field>
+                          </FieldLabel>
+                        ))}
                       </div>
                     )}
                   />
@@ -502,60 +506,51 @@ export function KundaliForm() {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Vimshottari Dasha</Label>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                  <RadioGroup
+                    value={String(watch("dashas") ? watch("dashaDepth") : 0)}
+                    onValueChange={(val) => {
+                      if (val === "0") {
+                        setValue("dashas", false, { shouldValidate: true })
+                      } else {
+                        setValue("dashas", true, { shouldValidate: true })
+                        setValue("dashaDepth", Number(val), { shouldValidate: true })
+                      }
+                    }}
+                    className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1"
+                  >
                     {[
-                      { val: 0, label: "None", desc: "No Dashas" },
-                      { val: 1, label: "Level 1", desc: "Mahadasha only" },
-                      { val: 2, label: "Level 2", desc: "Antardasha" },
-                      { val: 3, label: "Level 3", desc: "Pratyantar" },
-                    ].map((opt) => {
-                      const currentVal = watch("dashas") ? watch("dashaDepth") : 0
-                      const checked = currentVal === opt.val
-                      return (
-                        <button
-                          key={opt.val}
-                          type="button"
-                          onClick={() => {
-                            if (opt.val === 0) {
-                              setValue("dashas", false, { shouldValidate: true })
-                            } else {
-                              setValue("dashas", true, { shouldValidate: true })
-                              setValue("dashaDepth", opt.val, { shouldValidate: true })
-                            }
-                          }}
-                          className={cn(
-                            "flex flex-col items-start rounded-md border-2 p-2.5 transition-all text-left",
-                            checked
-                              ? "border-primary bg-primary/5 text-primary shadow-sm"
-                              : "border-input bg-transparent hover:bg-accent hover:text-accent-foreground"
-                          )}
-                        >
-                          <span className="text-[13px] font-bold">
-                            {opt.label}
-                          </span>
-                          <span className={cn("text-[11px] font-medium mt-0.5", checked ? "opacity-80" : "text-muted-foreground")}>
-                            {opt.desc}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
+                      { val: "0", label: "None", desc: "No Dashas" },
+                      { val: "1", label: "Level 1", desc: "Mahadasha only" },
+                      { val: "2", label: "Level 2", desc: "Antardasha" },
+                      { val: "3", label: "Level 3", desc: "Pratyantar" },
+                    ].map((opt) => (
+                      <FieldLabel key={opt.val} htmlFor={`dasha-${opt.val}`}>
+                        <Field>
+                          <div className="flex min-w-0 flex-col gap-0.5">
+                            <div className="flex items-center gap-1.5">
+                              <RadioGroupItem value={opt.val} id={`dasha-${opt.val}`} />
+                              <span className="text-sm font-bold">{opt.label}</span>
+                            </div>
+                            <span className="text-xs text-muted-foreground">{opt.desc}</span>
+                          </div>
+                        </Field>
+                      </FieldLabel>
+                    ))}
+                  </RadioGroup>
 
                   <div className={cn("pt-2 transition-opacity duration-200", !watch("dashas") && "opacity-40 pointer-events-none")}>
                     <Controller
                       name="currentDashaOnly"
                       control={control}
                       render={({ field }) => (
-                        <div className="flex items-center gap-3">
+                        <Field orientation="horizontal">
                           <Switch
                             id="currentDashaOnly"
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
-                          <Label htmlFor="currentDashaOnly" className="text-sm cursor-pointer font-medium hover:text-foreground">
-                            Current Dasha Only
-                          </Label>
-                        </div>
+                          <FieldLabel htmlFor="currentDashaOnly">Current Dasha Only</FieldLabel>
+                        </Field>
                       )}
                     />
                   </div>
@@ -564,16 +559,16 @@ export function KundaliForm() {
               </TabsContent>
             </Tabs>
           </form>
-        </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t px-6 py-4">
+        </div>
+        <div className="flex flex-col sm:flex-row justify-between gap-4 border-t bg-muted/50 px-6 py-4">
           <Controller
             name="outputFormat"
             control={control}
             render={({ field }) => (
               <Tabs value={field.value} onValueChange={field.onChange} className="w-full sm:w-[200px]">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="PROMPT">PROMPT</TabsTrigger>
-                  <TabsTrigger value="JSON">JSON</TabsTrigger>
+                  <TabsTrigger value="PROMPT"><RiFileTextLine className="size-3.5" />PROMPT</TabsTrigger>
+                  <TabsTrigger value="JSON"><RiCodeLine className="size-3.5" />JSON</TabsTrigger>
                 </TabsList>
               </Tabs>
             )}
@@ -591,8 +586,9 @@ export function KundaliForm() {
               </>
             )}
           </Button>
-        </CardFooter>
-      </Card>
+        </div>
+        </FramePanel>
+      </Frame>
 
       {/* ── Chart Output Modal ───────────────────────── */}
       <Dialog open={response !== null} onOpenChange={(open) => {
