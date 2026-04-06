@@ -15,7 +15,7 @@ interface NominatimResult {
   lon: string
 }
 
-export interface PlaceResult {
+interface PlaceResult {
   displayName: string
   latitude: number
   longitude: number
@@ -45,7 +45,11 @@ async function fetchTimezone(lat: number, lon: number): Promise<string | null> {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) {
+export function PlaceSearch({
+  onSelect,
+  className,
+  invalid,
+}: PlaceSearchProps) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<NominatimResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -57,7 +61,10 @@ export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) 
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false)
       }
     }
@@ -104,7 +111,12 @@ export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) 
     const lon = parseFloat(parseFloat(result.lon).toFixed(6))
     const timezone = await fetchTimezone(lat, lon)
 
-    onSelect({ displayName: result.display_name, latitude: lat, longitude: lon, timezone })
+    onSelect({
+      displayName: result.display_name,
+      latitude: lat,
+      longitude: lon,
+      timezone,
+    })
     setIsSelecting(false)
   }
 
@@ -117,7 +129,7 @@ export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) 
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="relative">
-        <RiMapPinLine className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <RiMapPinLine className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search for a city or place…"
@@ -128,8 +140,8 @@ export function PlaceSearch({ onSelect, className, invalid }: PlaceSearchProps) 
           aria-invalid={invalid}
           autoComplete="off"
         />
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">
-          {(isSearching || isSelecting) ? (
+        <div className="absolute top-1/2 right-2 -translate-y-1/2">
+          {isSearching || isSelecting ? (
             <RiLoaderLine className="size-4 animate-spin text-muted-foreground" />
           ) : query ? (
             <Button

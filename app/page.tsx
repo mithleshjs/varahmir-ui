@@ -4,8 +4,11 @@ import { Badge } from "@/components/ui/badge"
 
 export default function Page() {
   return (
-    <main className="relative min-h-svh bg-background overflow-hidden px-4 py-16 sm:py-20 sm:px-6">
-      <div className="mask-radial-from-45% mask-radial-to-75% mask-radial-at-top mask-radial-[75%_100%] mask-t-from-50% aspect-2/3 lg:aspect-9/4 absolute inset-0 md:aspect-square opacity-100 dark:opacity-25 pointer-events-none" aria-hidden>
+    <main className="relative min-h-svh overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-20">
+      <div
+        className="pointer-events-none absolute inset-0 aspect-2/3 mask-t-from-50% mask-radial-[75%_100%] mask-radial-from-45% mask-radial-to-75% mask-radial-at-top opacity-100 md:aspect-square lg:aspect-9/4 dark:opacity-25"
+        aria-hidden
+      >
         <Image
           src="https://images.unsplash.com/photo-1740516367177-ae20098c8786?q=80&w=2268&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt=""
@@ -16,15 +19,19 @@ export default function Page() {
         />
       </div>
       <div className="relative z-10 mx-auto max-w-2xl">
-        <header className="mb-10 text-center space-y-3">
-          <Badge variant="outline" className="font-mono uppercase tracking-widest">
+        <header className="mb-10 space-y-3 text-center">
+          <Badge
+            variant="outline"
+            className="font-mono tracking-widest uppercase"
+          >
             Vedic Astrology
           </Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground font-serif italic">
+          <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground italic sm:text-5xl">
             Kundali Generator
           </h1>
-          <p className="text-base text-muted-foreground max-w-md mx-auto font-serif italic">
-            Generate a detailed Vedic birth chart with divisional charts, dashas, and ashtakvarga from birth details.
+          <p className="mx-auto max-w-md font-serif text-base text-muted-foreground italic">
+            Generate a detailed Vedic birth chart with divisional charts,
+            dashas, and ashtakvarga from birth details.
           </p>
         </header>
         <KundaliForm />
@@ -35,7 +42,7 @@ export default function Page() {
           href="https://github.com/mithleshjs"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline underline-offset-4 hover:text-foreground transition-colors"
+          className="underline underline-offset-4 transition-colors hover:text-foreground"
         >
           Mithlesh
         </a>

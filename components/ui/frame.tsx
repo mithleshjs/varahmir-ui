@@ -16,25 +16,25 @@ import { cn } from "@/lib/utils"
  */
 const frameVariants = cva(
   [
-    "relative flex flex-col bg-muted/50 gap-0.75 p-0.75 rounded-(--frame-radius)",
+    "relative flex flex-col gap-0.75 rounded-(--frame-radius) bg-muted/50 p-0.75",
     "[--frame-radius:var(--radius-xl)]",
     // Default panel token values — overridden per-variant below
-    "[--frame-panel-bg:var(--color-card)] [--frame-panel-border-color:var(--color-border)] [--frame-border-color:var(--color-border)]",
+    "[--frame-border-color:var(--color-border)] [--frame-panel-bg:var(--color-card)] [--frame-panel-border-color:var(--color-border)]",
   ],
   {
     variants: {
       variant: {
         default: "border border-[var(--frame-border-color)] bg-clip-padding",
         inverse:
-          "[--frame-panel-bg:color-mix(in_oklch,var(--color-muted)_40%,transparent)] border border-[var(--frame-border-color)] bg-background bg-clip-padding",
+          "border border-[var(--frame-border-color)] bg-background bg-clip-padding [--frame-panel-bg:color-mix(in_oklch,var(--color-muted)_40%,transparent)]",
         ghost: "",
       },
       spacing: {
-        xs: "[--frame-panel-p:--spacing(2)] [--frame-panel-header-px:--spacing(2)] [--frame-panel-header-py:--spacing(1)] [--frame-panel-footer-px:--spacing(2)] [--frame-panel-footer-py:--spacing(1)]",
-        sm: "[--frame-panel-p:--spacing(3)] [--frame-panel-header-px:--spacing(3)] [--frame-panel-header-py:--spacing(2)] [--frame-panel-footer-px:--spacing(3)] [--frame-panel-footer-py:--spacing(2)]",
+        xs: "[--frame-panel-footer-px:--spacing(2)] [--frame-panel-footer-py:--spacing(1)] [--frame-panel-header-px:--spacing(2)] [--frame-panel-header-py:--spacing(1)] [--frame-panel-p:--spacing(2)]",
+        sm: "[--frame-panel-footer-px:--spacing(3)] [--frame-panel-footer-py:--spacing(2)] [--frame-panel-header-px:--spacing(3)] [--frame-panel-header-py:--spacing(2)] [--frame-panel-p:--spacing(3)]",
         default:
-          "[--frame-panel-p:--spacing(4)] [--frame-panel-header-px:--spacing(4)] [--frame-panel-header-py:--spacing(3)] [--frame-panel-footer-px:--spacing(4)] [--frame-panel-footer-py:--spacing(3)]",
-        lg: "[--frame-panel-p:--spacing(5)] [--frame-panel-header-px:--spacing(5)] [--frame-panel-header-py:--spacing(4)] [--frame-panel-footer-px:--spacing(5)] [--frame-panel-footer-py:--spacing(4)]",
+          "[--frame-panel-footer-px:--spacing(4)] [--frame-panel-footer-py:--spacing(3)] [--frame-panel-header-px:--spacing(4)] [--frame-panel-header-py:--spacing(3)] [--frame-panel-p:--spacing(4)]",
+        lg: "[--frame-panel-footer-px:--spacing(5)] [--frame-panel-footer-py:--spacing(4)] [--frame-panel-header-px:--spacing(5)] [--frame-panel-header-py:--spacing(4)] [--frame-panel-p:--spacing(5)]",
       },
       stacked: {
         true: [
@@ -53,7 +53,7 @@ const frameVariants = cva(
       },
       dense: {
         // Positional rules must stay as parent selectors — cannot be expressed via CSS vars
-        true: "p-0 gap-0 border-[var(--frame-border-color)] [&_[data-slot=frame-panel]]:-mx-px [&_[data-slot=frame-panel]]:before:hidden [&_[data-slot=frame-panel]:last-child]:-mb-px",
+        true: "gap-0 border-[var(--frame-border-color)] p-0 [&_[data-slot=frame-panel]]:-mx-px [&_[data-slot=frame-panel]]:before:hidden [&_[data-slot=frame-panel]:last-child]:-mb-px",
         false: "",
       },
     },
@@ -139,7 +139,7 @@ function FrameDescription({
 }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       data-slot="frame-panel-description"
       {...props}
     />
