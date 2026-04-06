@@ -353,7 +353,7 @@ export function KundaliForm() {
               onSubmit={handleSubmit(onSubmit)}
               className="space-y-8"
             >
-              <Tabs defaultValue="basic" className="w-full">
+              <Tabs defaultValue="basic" className="w-full max-w-xl">
                 <TabsList className="mb-8 grid w-full grid-cols-2">
                   <TabsTrigger value="basic">
                     <RiUserLine className="size-3.5" />
@@ -368,7 +368,7 @@ export function KundaliForm() {
                 {/* ── Birth Details ── */}
                 <TabsContent
                   value="basic"
-                  className="mt-0 space-y-8 focus-visible:ring-0 focus-visible:outline-none"
+                  className="mt-0 space-y-6 focus-visible:ring-0 focus-visible:outline-none"
                 >
                   {/* Personal */}
                   <div className="space-y-5">
