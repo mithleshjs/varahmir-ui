@@ -376,7 +376,7 @@ export function KundaliForm() {
                       <FieldLabel htmlFor="name">Full Name</FieldLabel>
                       <Input
                         id="name"
-                        placeholder="e.g. Arjuna Sharma"
+                        placeholder="e.g. Maharishi Bhrigu"
                         className="h-10 text-[15px]"
                         {...register("name")}
                         aria-invalid={!!errors.name}
