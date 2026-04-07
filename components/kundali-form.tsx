@@ -655,7 +655,7 @@ export function KundaliForm() {
                 {/* ── Chart Settings ── */}
                 <TabsContent
                   value="advanced"
-                  className="mt-0 space-y-6 pt-2 focus-visible:ring-0 focus-visible:outline-none"
+                  className="mt-0 space-y-6 focus-visible:ring-0 focus-visible:outline-none"
                 >
                   {/* Divisional Charts */}
                   <Field>
