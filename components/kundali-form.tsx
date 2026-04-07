@@ -288,7 +288,7 @@ export function KundaliForm() {
       if (!res.ok) {
         toast.custom(
           () => (
-            <Alert variant="destructive" className="shadow-lg">
+            <Alert className="border-destructive/30 bg-destructive/4 shadow-lg [&>svg]:text-destructive">
               <RiErrorWarningLine />
               <AlertTitle className="font-semibold">
                 Server returned {res.status}
