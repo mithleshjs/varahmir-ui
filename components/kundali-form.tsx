@@ -226,6 +226,7 @@ export function KundaliForm() {
     "PROMPT"
   )
   const [manualLocation, setManualLocation] = useState(false)
+  const [selectedPlaceName, setSelectedPlaceName] = useState("")
   const { copied, copy } = useCopyToClipboard()
 
   const {
@@ -565,7 +566,9 @@ export function KundaliForm() {
                         <PlaceSearch
                           className="h-10 text-[15px]"
                           invalid={!!(errors.lat || errors.lng)}
+                          value={selectedPlaceName}
                           onSelect={(result) => {
+                            setSelectedPlaceName(result.displayName)
                             setValue("lat", result.latitude, {
                               shouldValidate: true,
                             })

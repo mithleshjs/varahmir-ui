@@ -24,6 +24,7 @@ interface PlaceResult {
 
 interface PlaceSearchProps {
   onSelect: (result: PlaceResult) => void
+  value?: string
   className?: string
   invalid?: boolean
 }
@@ -47,16 +48,21 @@ async function fetchTimezone(lat: number, lon: number): Promise<string | null> {
 
 export function PlaceSearch({
   onSelect,
+  value = "",
   className,
   invalid,
 }: PlaceSearchProps) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(value)
   const [results, setResults] = useState<NominatimResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [isSelecting, setIsSelecting] = useState(false)
   const [open, setOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setQuery(value)
+  }, [value])
 
   // Close dropdown on outside click
   useEffect(() => {
