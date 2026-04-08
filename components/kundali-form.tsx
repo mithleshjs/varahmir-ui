@@ -226,6 +226,7 @@ export function KundaliForm() {
   const [responseFormat, setResponseFormat] = useState<"JSON" | "PROMPT">(
     "PROMPT"
   )
+  const [activeTab, setActiveTab] = useState<"basic" | "advanced">("basic")
   const [ampm, setAmpm] = useState<"AM" | "PM">("AM")
   const [manualLocation, setManualLocation] = useState(false)
   const [selectedPlaceName, setSelectedPlaceName] = useState("")
@@ -273,6 +274,25 @@ export function KundaliForm() {
       ? current.filter((c) => c !== id)
       : [...current, id]
     setValue("divisionalCharts", next, { shouldValidate: true })
+  }
+
+  function onInvalid() {
+    const hasBasicError = !!(
+      errors.name ||
+      errors.gender ||
+      errors.dob ||
+      errors.time ||
+      errors.lat ||
+      errors.lng ||
+      errors.timezone
+    )
+    if (hasBasicError) {
+      setActiveTab("basic")
+      setTimeout(() => {
+        const el = document.querySelector<HTMLElement>('[aria-invalid="true"]')
+        el?.focus()
+      }, 50)
+    }
   }
 
   async function onSubmit(data: KundaliFormValues) {
@@ -362,10 +382,14 @@ export function KundaliForm() {
           <div className="p-6">
             <form
               id="kundali-form"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(onSubmit, onInvalid)}
               className="space-y-8"
             >
-              <Tabs defaultValue="basic" className="w-full max-w-xl">
+              <Tabs
+                value={activeTab}
+                onValueChange={(v) => setActiveTab(v as "basic" | "advanced")}
+                className="w-full max-w-xl"
+              >
                 <TabsList className="mb-8 grid w-full grid-cols-2">
                   <TabsTrigger value="basic">
                     <RiUserLine className="size-3.5" />
@@ -840,7 +864,7 @@ export function KundaliForm() {
             />
             <Button
               type="button"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(onSubmit, onInvalid)}
               className="w-full sm:w-auto"
               disabled={isSubmitting}
             >
