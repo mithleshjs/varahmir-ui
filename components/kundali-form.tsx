@@ -41,6 +41,13 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -109,19 +116,13 @@ const formSchema = z.object({
     hour: z
       .number({ error: "Hour is required and must be a number" })
       .int()
-      .min(0, "0–23")
-      .max(23, "0–23"),
+      .min(1, "1–12")
+      .max(12, "1–12"),
     minute: z
       .number({ error: "Minute is required and must be a number" })
       .int()
       .min(0, "0–59")
       .max(59, "0–59"),
-    second: z
-      .number({ error: "Second must be a number" })
-      .int()
-      .min(0, "0–59")
-      .max(59, "0–59")
-      .optional(),
   }),
   lat: z
     .number({ error: "Birth location is required" })
@@ -225,6 +226,7 @@ export function KundaliForm() {
   const [responseFormat, setResponseFormat] = useState<"JSON" | "PROMPT">(
     "PROMPT"
   )
+  const [ampm, setAmpm] = useState<"AM" | "PM">("AM")
   const [manualLocation, setManualLocation] = useState(false)
   const [selectedPlaceName, setSelectedPlaceName] = useState("")
   const { copied, copy } = useCopyToClipboard()
@@ -242,7 +244,7 @@ export function KundaliForm() {
       name: "",
       gender: "MALE",
       dob: { year: 1990, month: 1, day: 1 },
-      time: { hour: 0, minute: 0, second: 0 },
+      time: { hour: 12, minute: 0 },
       lat: undefined,
       lng: undefined,
       timezone: "Asia/Kolkata",
@@ -276,6 +278,15 @@ export function KundaliForm() {
   async function onSubmit(data: KundaliFormValues) {
     setResponse(null)
     setResponseFormat(data.outputFormat)
+    // Convert 12-hour AM/PM to 24-hour
+    const h = data.time.hour
+    let hour24: number
+    if (ampm === "AM") {
+      hour24 = h === 12 ? 0 : h
+    } else {
+      hour24 = h === 12 ? 12 : h + 12
+    }
+    data = { ...data, time: { ...data.time, hour: hour24 } }
     const endpoint =
       process.env.NEXT_PUBLIC_CHART_API_URL ?? "/api/generate-chart"
     try {
@@ -483,65 +494,58 @@ export function KundaliForm() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                      {[
-                        {
-                          id: "hour",
-                          label: "Hour",
-                          placeholder: "HH",
-                          field: "time.hour" as const,
-                          min: 0,
-                          max: 23,
-                          error: errors.time?.hour,
-                        },
-                        {
-                          id: "minute",
-                          label: "Minute",
-                          placeholder: "MM",
-                          field: "time.minute" as const,
-                          min: 0,
-                          max: 59,
-                          error: errors.time?.minute,
-                        },
-                        {
-                          id: "second",
-                          label: "Second",
-                          placeholder: "SS",
-                          field: "time.second" as const,
-                          min: 0,
-                          max: 59,
-                          error: undefined,
-                        },
-                      ].map(
-                        ({
-                          id,
-                          label,
-                          placeholder,
-                          field,
-                          min,
-                          max,
-                          error,
-                        }) => (
-                          <Field key={id}>
-                            <FieldLabel
-                              htmlFor={id}
-                              className="text-xs text-muted-foreground uppercase"
-                            >
-                              {label}
-                            </FieldLabel>
-                            <Input
-                              id={id}
-                              type="number"
-                              min={min}
-                              max={max}
-                              placeholder={placeholder}
-                              className="h-10 tabular-nums"
-                              {...register(field, { valueAsNumber: true })}
-                              aria-invalid={!!error}
-                            />
-                            <FieldError>{error?.message}</FieldError>
-                          </Field>
-                        )
-                      )}
+                      <Field>
+                        <FieldLabel
+                          htmlFor="hour"
+                          className="text-xs text-muted-foreground uppercase"
+                        >
+                          Hour
+                        </FieldLabel>
+                        <Input
+                          id="hour"
+                          type="number"
+                          min={1}
+                          max={12}
+                          placeholder="HH"
+                          className="h-10 tabular-nums"
+                          {...register("time.hour", { valueAsNumber: true })}
+                          aria-invalid={!!errors.time?.hour}
+                        />
+                        <FieldError>{errors.time?.hour?.message}</FieldError>
+                      </Field>
+                      <Field>
+                        <FieldLabel
+                          htmlFor="minute"
+                          className="text-xs text-muted-foreground uppercase"
+                        >
+                          Minute
+                        </FieldLabel>
+                        <Input
+                          id="minute"
+                          type="number"
+                          min={0}
+                          max={59}
+                          placeholder="MM"
+                          className="h-10 tabular-nums"
+                          {...register("time.minute", { valueAsNumber: true })}
+                          aria-invalid={!!errors.time?.minute}
+                        />
+                        <FieldError>{errors.time?.minute?.message}</FieldError>
+                      </Field>
+                      <Field>
+                        <FieldLabel className="text-xs text-muted-foreground uppercase">
+                          AM/PM
+                        </FieldLabel>
+                        <Select value={ampm} onValueChange={(v) => setAmpm(v as "AM" | "PM")}>
+                          <SelectTrigger className="h-10">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="AM">AM</SelectItem>
+                            <SelectItem value="PM">PM</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </Field>
                     </div>
                   </div>
 
